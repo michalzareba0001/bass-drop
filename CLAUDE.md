@@ -1,0 +1,99 @@
+# Bass Drop
+
+Hobbystyczna apka w przeglądarce do robienia bitów z basem 808: syntezator basu z sekwencerem, syntezowane bębny z rolkami, sidechain od stopy, mikser, kontroler MIDI, nagrywanie i sampler pętli. Wszystko po stronie przeglądarki (Web Audio, Web MIDI), bez backendu.
+
+Właściciel pisze po polsku. **Cały tekst w interfejsie jest po polsku**, komentarze w kodzie po angielsku.
+
+## Polecenia
+
+```bash
+npm install
+npm run dev        # Vite na http://localhost:5180
+npm run typecheck  # tsc, bez emitowania
+npm run build      # tsc && vite build → dist/
+```
+
+Przed każdym commitem: `npm run typecheck` musi przejść bez błędów.
+
+## Wdrożenie
+
+Repo jest podpięte do **Vercel**: każdy push na `main` buduje i publikuje produkcję, każda inna gałąź dostaje własny link do podglądu. Ustawienia domyślne dla Vite (build `npm run build`, output `dist`). Strona musi być na HTTPS, bo tego wymagają Web MIDI, mikrofon i AudioWorklet (localhost jest wyjątkiem).
+
+## Stack
+
+Vite + React 19 + TypeScript (strict) + Zustand (z `persist`) + idb-keyval. Żadnych bibliotek audio: wszystko na czystym Web Audio API.
+
+## Najważniejsza zasada architektury
+
+**Silnik dźwięku żyje poza Reactem.** Moduły w `src/audio/` to zwykłe klasy-singletony bez importów z Reacta. React tylko wywołuje ich metody i czyta stan. Nie trzymaj węzłów audio, oscylatorów ani zegara sekwencera w komponentach ani w stanie Reacta: przerysowanie nie może rozjechać rytmu ani uciąć dźwięku.
+
+Animacje (mierniki, przebieg, kursor sekwencera) rysujemy w `requestAnimationFrame` przez refy albo zmienne CSS, a nie przez `setState` w każdej klatce.
+
+## Struktura
+
+```
+src/
+  audio/
+    engine.ts     syntezator basu (głos mono, glide, spadek wysokości, przester, filtr, LFO) + wyjście master
+    drums.ts      syntezowane bębny: kick, snare, clap, zamknięty i otwarty hi-hat (choke)
+    mixer.ts      kanały miksera: duck (sidechain) → fader → mute/solo → mix, analizery do mierników
+    sequencer.ts  sekwencer z look-ahead (timer 25 ms planuje ~120 ms do przodu na zegarze audio)
+    sampler.ts    odtwarzanie klipów na padach (pętle, przycinanie, wysokość)
+    recorder.ts   nagrywanie przez AudioWorklet z dokładnością do próbki
+    midi.ts       Web MIDI: nuty, pitch bend, CC (mapowanie gałek), sustain, pady na kanale 10
+    params.ts     definicje parametrów syntezatora, presety, sekcje gałek
+    util.ts       hold() (cancelAndHoldAtTime z fallbackiem), formatowanie dB
+    wav.ts        eksport WAV 16-bit
+  control.ts      klej między wejściami (ekran, klawiatura, MIDI) a modułami audio
+  store.ts        Zustand: useStore (zapisywany) + useRuntime (ulotny stan UI)
+  lib/clips.ts    dźwięk nagrań w IndexedDB + liczenie peaków do miniatur
+  components/     interfejs (Knob, Rack, Sequencer, DrumMachine, Mixer, Piano, MidiPanel, RecorderPanel, Sampler, ClipLibrary, Waveform, Screen)
+```
+
+## Tor sygnału
+
+```
+syntezator → shaper → filtr → synthOut ──→ [mikser: bass]  ─┐
+bębny ────────────────────────────────→ [mikser: drums] ─┤
+pady samplera ─────────────────────────→ [mikser: padN]  ─┼→ mix → master → limiter → soft clip → analyser → głośniki
+odsłuch klipów ───────────────────────→ previewBus ──────┘
+```
+
+- Każde uderzenie stopy wywołuje `mixer.duck(t)`, który przycisza kanały z włączonym SC. Stopa nie przycisza niczego, gdy kanał bębnów jest wyciszony albo nie gra przez solo innego kanału.
+- Nagrywanie podpina się pod `engine.out` (soft clip), więc nagrywa cały miks, albo pod mikrofon.
+
+## Zasady, których trzymamy się w kodzie audio
+
+- **Zapas głośności**: `synthOut` 0.72, wyjście bębnów 0.65, `mix` 0.6, próg limitera −3 dB. Kompresor w Web Audio sam dokłada makeup gain, więc niski próg wypycha master pod sufit i mierniki stale świecą na czerwono. Soft clip na końcu nigdy nie przekracza ±0.98. Po zmianach poziomów sprawdź szczyty: kanały poniżej 1.0, master około −1 dB.
+- **Planowanie w czasie**: wszystko, co gra w rytmie, planuj na zegarze `AudioContext` (parametr `t`), a nie przez `setTimeout`.
+- **Automatyka parametrów**: przed nową automatyką na już animowanym parametrze użyj `hold(param, t)` z `util.ts`. Do przyciszania sidechainem używamy `setTargetAtTime` w obie strony, bo `linearRamp` przy nakładających się uderzeniach potrafił zejść poniżej ustawionego poziomu.
+- **Pierwszy dźwięk wymaga gestu użytkownika**: `engine.ensure()` tworzy `AudioContext`. Jeśli kontekst jest zawieszony (na przykład MIDI przyszło przed kliknięciem), pokazujemy przycisk „Kliknij, żeby włączyć dźwięk”.
+
+## Stan i zapis
+
+- `useStore` zapisuje się w localStorage pod kluczem **`bass-drop`** (zawiera wzory, parametry, mikser, pady, mapowanie MIDI). W `store.ts` jest migracja ze starego klucza `sub-drop-808`. Nowe pola dodawaj z wartością domyślną także w funkcji `merge`, żeby starsze zapisy się nie wysypały.
+- Akcje w store, które zmieniają dźwięk, od razu wołają odpowiedni moduł (`engine.setParam`, `drums.configure`, `mixer.configure`, `sampler.update`). Po starcie `main.tsx` wysyła zapisany stan do modułów.
+- Dźwięk nagrań jest w IndexedDB pod kluczami **`sd808-clip:<id>`**, a metadane w store. Nie zmieniaj tego prefiksu ani nazwy procesora workletu `sd-capture` bez migracji, bo użytkownik ma już zapisane nagrania.
+- Wzór bębnów: wartość kroku 0 = nic, 1 = uderzenie, 2 = rolka 1/32, 3 = trioli, 4 = rolka 1/64.
+- Kanały miksera: `bass`, `drums`, `pad0` … `pad7`.
+
+## Interfejs
+
+- Jeden ciemny wygląd w stylu sprzętowego syntezatora. Kolory i fonty są tokenami w `:root` w `src/styles.css`: kolory 808 (`--red`, `--orange`, `--yellow`, `--cream`) i fonty Big Shoulders Display, Barlow, Barlow Semi Condensed, IBM Plex Mono. Używaj tokenów zamiast nowych kolorów.
+- Tokeny kolorów to hex, bo kod dokleja do nich kanał alfa (`COL.fill + '55'`).
+- Skróty klawiszowe: A W S E D F T G Y H U J K (klawisze syntezatora), Z/X (oktawa), spacja (start/stop), R (nagrywanie), 1–8 (pady).
+- Apka ma działać też na telefonie: siatki przewijają się poziomo we własnych kontenerach, a strona nie może przewijać się na boki.
+
+## Testowanie
+
+- W trybie deweloperskim `window.__bassDrop` daje dostęp do `{ engine, mixer, drums, sequencer }`. Na przykład `__bassDrop.mixer.peak('bass')` zwraca szczyt kanału, a `__bassDrop.mixer.ducking('bass')` to, jak mocno sidechain akurat przycisza bas.
+- Mierniki i animacje stoją, gdy karta jest w tle, bo `requestAnimationFrame` nie działa. Poziomy mierz wtedy w pętli z `setTimeout`.
+- Dźwięk startuje dopiero po prawdziwym kliknięciu; `element.click()` z JavaScriptu nie liczy się jako gest.
+- MIDI nie działa w osadzonych ramkach ani bez HTTPS. Testuj w Chrome lub Chromium.
+
+## Pomysły na dalszy rozwój
+
+- Kilka wzorów (A, B, C, D) i łańcuch utworu, akcenty, swing, wybór tonacji.
+- Wczytywanie własnych plików do samplera, automatyczne cięcie na uderzenia, dopasowanie pętli do tempa.
+- Efekty (reverb i delay na górze pasma, bitcrusher), drugi oscylator, własne presety.
+- Zapis i wczytanie całego projektu do pliku, eksport wzoru do MIDI, eksport utworu do WAV bez nagrywania na żywo.
