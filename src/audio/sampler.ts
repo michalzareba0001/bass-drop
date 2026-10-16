@@ -49,6 +49,10 @@ class Sampler {
     this.buffers.set(id, b)
   }
 
+  setBuffer(id: string, b: AudioBuffer) {
+    this.buffers.set(id, b)
+  }
+
   removeClip(id: string) {
     this.buffers.delete(id)
   }

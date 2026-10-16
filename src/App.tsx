@@ -12,6 +12,7 @@ import { RecorderPanel } from './components/RecorderPanel'
 import { Sampler } from './components/Sampler'
 import { Screen } from './components/Screen'
 import { Sequencer } from './components/Sequencer'
+import { TrackSlicer } from './components/TrackSlicer'
 
 function Transport() {
   const playing = useRuntime((s) => s.playing)
@@ -86,6 +87,7 @@ export function App() {
         <RecorderPanel />
         <MidiPanel />
       </div>
+      <TrackSlicer />
       <Sampler />
       <ClipLibrary />
       <FileFacts />

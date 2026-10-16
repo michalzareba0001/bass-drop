@@ -677,6 +677,77 @@ body:has(.learn[aria-pressed='true']) .rack .knob {
   gap: 10px;
 }
 
+/* track slicer */
+.slicer.over {
+  outline: 2px dashed var(--yellow);
+  outline-offset: -6px;
+}
+.slicer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  min-width: 0;
+}
+.sl-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+}
+.sl-info strong {
+  font-family: var(--f-label);
+  font-weight: 700;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.sl-info span,
+.sl-pos {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--yellow);
+}
+.sl-pos {
+  min-width: 64px;
+  text-align: center;
+}
+.sl-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.sl-lab {
+  font-family: var(--f-label);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--muted);
+}
+.sl-num {
+  width: 72px;
+  background: var(--screen);
+  color: var(--yellow);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 5px 6px;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  text-align: right;
+}
+.slicer input[type='range'],
+.slicer input[type='checkbox'] {
+  accent-color: var(--orange);
+}
+.busy {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--yellow);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 /* clip library */
 .clips {
   list-style: none;

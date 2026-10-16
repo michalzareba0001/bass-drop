@@ -243,6 +243,19 @@ export const useStore = create<State>()(
   ),
 )
 
+/** A track loaded for slicing; the audio itself lives in slicer.buf. */
+export interface TrackInfo {
+  /** changes with every new file */
+  id: number
+  name: string
+  duration: number
+  peaks: number[]
+  detectedBpm: number
+  /** grid, adjustable by hand */
+  bpm: number
+  t0: number
+}
+
 /** Short-lived UI state that is not saved. */
 interface Runtime {
   playing: boolean
@@ -256,6 +269,9 @@ interface Runtime {
   midiStatus: string
   midiInputs: { id: string; name: string }[]
   audioLocked: boolean
+  track: TrackInfo | null
+  trackStatus: string | null
+  trackError: string | null
 }
 
 export const useRuntime = create<Runtime>()(() => ({
@@ -270,4 +286,7 @@ export const useRuntime = create<Runtime>()(() => ({
   midiStatus: 'MIDI: sprawdzam…',
   midiInputs: [],
   audioLocked: false,
+  track: null,
+  trackStatus: null,
+  trackError: null,
 }))

@@ -1,6 +1,6 @@
 # Bass Drop
 
-Bas 808 w przeglądarce: syntezator z sekwencerem, syntezowane bębny z rolkami, sidechain, mikser, kontroler MIDI, nagrywanie i sampler pętli.
+Bas 808 w przeglądarce: syntezator z sekwencerem, syntezowane bębny z rolkami, sidechain, mikser, kontroler MIDI, nagrywanie, sampler pętli i cięcie własnych kawałków (mp3, wav…) na pętle i uderzenia z automatycznym wykrywaniem tempa.
 
 ## Uruchomienie
 
@@ -20,7 +20,7 @@ Otwórz adres z terminala (domyślnie http://localhost:5180) w Chrome lub Chromi
 
 ## Struktura
 
-- `src/audio/` – silnik dźwięku poza Reactem: `engine` (syntezator i wyjście), `drums` (bębny), `mixer` (kanały, mute/solo, sidechain), `sequencer`, `recorder` (AudioWorklet), `sampler`, `midi`, `wav`
+- `src/audio/` – silnik dźwięku poza Reactem: `engine` (syntezator i wyjście), `drums` (bębny), `mixer` (kanały, mute/solo, sidechain), `sequencer`, `recorder` (AudioWorklet), `sampler`, `beats` + `slicer` (analiza i cięcie kawałków), `midi`, `wav`
 - `src/control.ts` – łączy wejścia (ekran, klawiatura, MIDI) z modułami audio
 - `src/store.ts` – stan w Zustand; ustawienia zapisują się w localStorage, dźwięk nagrań w IndexedDB
 - `src/components/` – interfejs

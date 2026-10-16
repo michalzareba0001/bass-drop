@@ -6,6 +6,7 @@ import { drums } from './audio/drums'
 import { mixer } from './audio/mixer'
 import { sequencer } from './audio/sequencer'
 import { sampler } from './audio/sampler'
+import { slicer } from './audio/slicer'
 import { installAudioUnlock, installKeyboard } from './control'
 import { connectMidi } from './audio/midi'
 import { loadClipAudio } from './lib/clips'
@@ -21,7 +22,7 @@ engine.setParams(useStore.getState().params)
 installKeyboard()
 // dev-only handle for poking at the audio modules from the browser console
 if ((import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV)
-  Object.assign(window, { __bassDrop: { engine, mixer, drums, sequencer } })
+  Object.assign(window, { __bassDrop: { engine, mixer, drums, sequencer, sampler, slicer } })
 installAudioUnlock()
 connectMidi()
 

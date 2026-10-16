@@ -1,6 +1,6 @@
 # Bass Drop
 
-Hobbystyczna apka w przeglądarce do robienia bitów z basem 808: syntezator basu z sekwencerem, syntezowane bębny z rolkami, sidechain od stopy, mikser, kontroler MIDI, nagrywanie i sampler pętli. Wszystko po stronie przeglądarki (Web Audio, Web MIDI), bez backendu.
+Hobbystyczna apka w przeglądarce do robienia bitów z basem 808: syntezator basu z sekwencerem, syntezowane bębny z rolkami, sidechain od stopy, mikser, kontroler MIDI, nagrywanie, sampler pętli i cięcie wczytanych kawałków (mp3 itp.) na pętle i uderzenia. Wszystko po stronie przeglądarki (Web Audio, Web MIDI), bez backendu.
 
 Właściciel pisze po polsku. **Cały tekst w interfejsie jest po polsku**, komentarze w kodzie po angielsku.
 
@@ -39,6 +39,9 @@ src/
     mixer.ts      kanały miksera: duck (sidechain) → fader → mute/solo → mix, analizery do mierników
     sequencer.ts  sekwencer z look-ahead (timer 25 ms planuje ~120 ms do przodu na zegarze audio)
     sampler.ts    odtwarzanie klipów na padach (pętle, przycinanie, wysokość)
+    beats.ts      analiza kawałka: obwiednia uderzeń (spectral flux), tempo, siatka taktów, pojedyncze uderzenia
+    beats.worker.ts  uruchamia beats.ts w Web Workerze
+    slicer.ts     wczytany kawałek (tylko w pamięci), odsłuch, wycinanie pętli i uderzeń, dopasowanie do tempa
     recorder.ts   nagrywanie przez AudioWorklet z dokładnością do próbki
     midi.ts       Web MIDI: nuty, pitch bend, CC (mapowanie gałek), sustain, pady na kanale 10
     params.ts     definicje parametrów syntezatora, presety, sekcje gałek
@@ -47,7 +50,7 @@ src/
   control.ts      klej między wejściami (ekran, klawiatura, MIDI) a modułami audio
   store.ts        Zustand: useStore (zapisywany) + useRuntime (ulotny stan UI)
   lib/clips.ts    dźwięk nagrań w IndexedDB + liczenie peaków do miniatur
-  components/     interfejs (Knob, Rack, Sequencer, DrumMachine, Mixer, Piano, MidiPanel, RecorderPanel, Sampler, ClipLibrary, Waveform, Screen)
+  components/     interfejs (Knob, Rack, Sequencer, DrumMachine, Mixer, Piano, MidiPanel, RecorderPanel, TrackSlicer, Sampler, ClipLibrary, Waveform, Screen)
 ```
 
 ## Tor sygnału
@@ -76,6 +79,15 @@ odsłuch klipów ─────────────────────
 - Dźwięk nagrań jest w IndexedDB pod kluczami **`sd808-clip:<id>`**, a metadane w store. Nie zmieniaj tego prefiksu ani nazwy procesora workletu `sd-capture` bez migracji, bo użytkownik ma już zapisane nagrania.
 - Wzór bębnów: wartość kroku 0 = nic, 1 = uderzenie, 2 = rolka 1/32, 3 = trioli, 4 = rolka 1/64.
 - Kanały miksera: `bass`, `drums`, `pad0` … `pad7`.
+- Wczytany kawałek nie jest zapisywany (siedzi w `slicer.buf` i w samplerze pod kluczem `__track`). Zapisują się tylko wycięte fragmenty, jako zwykłe nagrania.
+
+## Cięcie kawałków (`beats.ts`, `slicer.ts`, `TrackSlicer`)
+
+- Analiza idzie w workerze: STFT 1024/512 (2048/1024 powyżej 50 kHz), log-spectral flux w trzech pasmach (całość, poniżej 150 Hz, poniżej 4 kHz).
+- Tempo: autokorelacja obwiedni spłaszczonej potęgą 0.6, mieszanka 0.3 pasma poniżej 4 kHz + 0.7 całości, z preferencją okolic 120 BPM. Potem dopasowanie siatki do całego utworu (co 0.005 BPM) i przyciąganie do całego BPM. Te wagi są dobrane na syntetycznych bitach (boom-bap 75/85/92,5, trap 140, house 124, backbeat 126). Zmieniaj je tylko po sprawdzeniu na podobnym zestawie, bo łatwo o tempo o połowę za wolne albo za szybkie. Drum and bass (174) wychodzi jako 87, na to jest przycisk 2×.
+- Początek taktu: ćwierćnuta z najmocniejszym „dołem bez środka” (stopa, nie werbel).
+- Cięcia zaczynają się `PRE_ROLL` (3 ms) przed linią siatki albo przed atakiem uderzenia (`slicer.refine`).
+- Dopasowanie do tempa projektu zmienia prędkość jak gramofon (razem z wysokością), przez `OfflineAudioContext`. Pętla ma wtedy dokładnie N taktów w tempie projektu.
 
 ## Interfejs
 
@@ -94,6 +106,6 @@ odsłuch klipów ─────────────────────
 ## Pomysły na dalszy rozwój
 
 - Kilka wzorów (A, B, C, D) i łańcuch utworu, akcenty, swing, wybór tonacji.
-- Wczytywanie własnych plików do samplera, automatyczne cięcie na uderzenia, dopasowanie pętli do tempa.
+- Rozciąganie w czasie bez zmiany wysokości, wyciąganie samej perkusji z miksu (HPSS), przepisywanie rytmu kawałka na wzór bębnów.
 - Efekty (reverb i delay na górze pasma, bitcrusher), drugi oscylator, własne presety.
 - Zapis i wczytanie całego projektu do pliku, eksport wzoru do MIDI, eksport utworu do WAV bez nagrywania na żywo.

@@ -4,7 +4,8 @@
  */
 import { engine } from './audio/engine'
 import { recorder } from './audio/recorder'
-import { sampler } from './audio/sampler'
+import { sampler, type Pad } from './audio/sampler'
+import { slicer, TrackError } from './audio/slicer'
 import { sequencer } from './audio/sequencer'
 import { computePeaks, deleteClipAudio, saveClipAudio } from './lib/clips'
 import { PAD_COUNT, useRuntime, useStore } from './store'
@@ -132,22 +133,7 @@ export async function toggleRecord() {
 
 recorder.onDone = (ch, sr) => {
   const st = useStore.getState()
-  const id = crypto.randomUUID()
-  const n = st.clips.length + 1
-  const meta = {
-    id,
-    name: 'Nagranie ' + n,
-    duration: ch[0].length / sr,
-    sr,
-    created: Date.now(),
-    bars: recBarsUsed,
-    peaks: computePeaks(ch),
-  }
-  sampler.setClip(id, ch, sr)
-  saveClipAudio(id, { sr, ch }).catch(() =>
-    useRuntime.setState({ recError: 'Nie udało się zapisać nagrania w przeglądarce (brak miejsca?). Pobierz je jako WAV.' }),
-  )
-  st.addClip(meta)
+  const id = storeClip(ch, sr, 'Nagranie ' + (st.clips.length + 1), recBarsUsed)
   // drop it on the selected pad if empty, otherwise on the first empty pad
   const pads = useStore.getState().pads
   let target = pads[st.selectedPad].clipId ? pads.findIndex((p) => !p.clipId) : st.selectedPad
@@ -155,6 +141,25 @@ recorder.onDone = (ch, sr) => {
     st.assignClip(target, id)
     st.selectPad(target)
   }
+}
+
+/** Saves new audio as a clip (sampler, IndexedDB, library) and returns its id. */
+function storeClip(ch: Float32Array[], sr: number, name: string, bars: number | null) {
+  const id = crypto.randomUUID()
+  sampler.setClip(id, ch, sr)
+  saveClipAudio(id, { sr, ch }).catch(() =>
+    useRuntime.setState({ recError: 'Nie udało się zapisać nagrania w przeglądarce (brak miejsca?). Pobierz je jako WAV.' }),
+  )
+  useStore.getState().addClip({
+    id,
+    name,
+    duration: ch[0].length / sr,
+    sr,
+    created: Date.now(),
+    bars,
+    peaks: computePeaks(ch),
+  })
+  return id
 }
 
 export async function removeClip(id: string) {
@@ -241,4 +246,64 @@ export function installAudioUnlock() {
     },
     true,
   )
+}
+
+/* ---------- imported track → pads ---------- */
+let trackSeq = 0
+
+export async function loadTrack(file: File) {
+  useRuntime.setState({ trackStatus: 'Wczytuję plik…', trackError: null })
+  try {
+    const buf = await slicer.load(file)
+    useRuntime.setState({ track: null, trackStatus: 'Szukam tempa i taktów…' })
+    const a = await slicer.analyse()
+    const ch = Array.from({ length: buf.numberOfChannels }, (_, c) => buf.getChannelData(c))
+    useRuntime.setState({
+      track: {
+        id: ++trackSeq,
+        name: file.name.replace(/\.[^.]+$/, '') || 'Kawałek',
+        duration: buf.duration,
+        peaks: computePeaks(ch, 1600),
+        detectedBpm: a.bpm,
+        bpm: a.bpm,
+        t0: a.t0,
+      },
+      trackStatus: null,
+    })
+  } catch (e) {
+    useRuntime.setState({
+      trackStatus: null,
+      trackError: e instanceof TrackError ? e.message : 'Coś poszło nie tak przy wczytywaniu pliku.',
+    })
+  }
+}
+
+export interface Slice {
+  /** pad index */
+  pad: number
+  /** start in the track (s) */
+  start: number
+  /** length in the track (s) */
+  dur: number
+  name: string
+  bars: number | null
+}
+
+/**
+ * Cuts slices out of the loaded track and puts each on its pad. Loops with `bars` set are
+ * resampled to the project tempo when `fitBpm` is given, so they line up with the pattern.
+ */
+export async function slicesToPads(slices: Slice[], trackBpm: number, fitBpm: number | null, pad: Partial<Pad>) {
+  const b = slicer.buf
+  if (!b) return
+  for (const s of slices) {
+    const rate = s.bars && fitBpm ? fitBpm / trackBpm : 1
+    const outDur = s.bars && fitBpm ? (s.bars * 240) / fitBpm : s.dur
+    const ch = await slicer.render(s.start, outDur, rate)
+    const id = storeClip(ch, b.sampleRate, s.name, s.bars)
+    const st = useStore.getState()
+    st.assignClip(s.pad, id)
+    if (Object.keys(pad).length) st.updatePad(s.pad, pad)
+  }
+  useStore.getState().selectPad(slices[0]?.pad ?? useStore.getState().selectedPad)
 }
