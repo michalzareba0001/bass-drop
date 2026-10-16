@@ -19,26 +19,13 @@ export function TrackSlicer() {
   const track = useRuntime((s) => s.track)
   const status = useRuntime((s) => s.trackStatus)
   const error = useRuntime((s) => s.trackError)
-  const [over, setOver] = useState(false)
   const input = useRef<HTMLInputElement>(null)
   const pick = (f?: File | null) => {
     if (f && !status) loadTrack(f)
   }
 
   return (
-    <section
-      className={'panel slicer' + (over ? ' over' : '')}
-      onDragOver={(e) => {
-        e.preventDefault()
-        setOver(true)
-      }}
-      onDragLeave={() => setOver(false)}
-      onDrop={(e) => {
-        e.preventDefault()
-        setOver(false)
-        pick(e.dataTransfer.files[0])
-      }}
-    >
+    <section className="panel slicer">
       <div className="panel-head">
         <h2>Kawałek → pętle</h2>
         <span className="hint">Apka sama znajdzie tempo i takty. Wycięte pętle trafiają na pady i do Nagrań, sam plik nie jest zapisywany.</span>
@@ -62,7 +49,7 @@ export function TrackSlicer() {
             {status}
           </span>
         ) : (
-          !track && <span className="hint">albo upuść go tutaj: mp3, wav, m4a, ogg</span>
+          !track && <span className="hint">albo przeciągnij go w dowolne miejsce strony: mp3, wav, m4a, ogg</span>
         )}
       </div>
       {error && <p className="msg err">{error}</p>}

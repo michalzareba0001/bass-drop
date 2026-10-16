@@ -91,14 +91,18 @@ odsłuch klipów ─────────────────────
 
 ## Interfejs
 
+- **Sekcje w zakładkach** (`TABS` w `store.ts`, `App.tsx`): Bas (presety, ekran, gałki, wzór, klawiatura), Bębny, Sampler (pady, kawałek → pętle, nagrywanie, biblioteka nagrań), Mikser, Więcej (MIDI, skróty, informacje). Widać jedną naraz. Aktywna zakładka zapisuje się w `useStore.tab`.
+- Wszystkie strony zostają zamontowane, a ukryte mają atrybut `hidden`, żeby nie tracić ich stanu (np. zaznaczenia w cięciu kawałka). Nowe panele dodawaj do właściwej `<Page>`, nie na koniec aplikacji.
+- Górny pasek jest przyklejony: logo, Graj/Stop, BPM, Nagraj i zakładki. Na telefonie (do 700 px) zakładki są paskiem na dole ekranu. Kropka na zakładce oznacza: Sampler gra albo nagrywa, w Mikserze jest wyciszony kanał albo solo.
+- Plik audio upuszczony w dowolnym miejscu strony przełącza na Sampler i wczytuje się do cięcia.
 - Jeden ciemny wygląd w stylu sprzętowego syntezatora. Kolory i fonty są tokenami w `:root` w `src/styles.css`: kolory 808 (`--red`, `--orange`, `--yellow`, `--cream`) i fonty Big Shoulders Display, Barlow, Barlow Semi Condensed, IBM Plex Mono. Używaj tokenów zamiast nowych kolorów.
 - Tokeny kolorów to hex, bo kod dokleja do nich kanał alfa (`COL.fill + '55'`).
-- Skróty klawiszowe: A W S E D F T G Y H U J K (klawisze syntezatora), Z/X (oktawa), spacja (start/stop), R (nagrywanie), 1–8 (pady).
+- Skróty klawiszowe: A W S E D F T G Y H U J K (klawisze syntezatora), Z/X (oktawa), spacja (start/stop), R (nagrywanie), 1–8 (pady), Shift+1…5 (zakładki). Lista jest też w zakładce Więcej (`SHORTCUTS` w `App.tsx`).
 - Apka ma działać też na telefonie: siatki przewijają się poziomo we własnych kontenerach, a strona nie może przewijać się na boki.
 
 ## Testowanie
 
-- W trybie deweloperskim `window.__bassDrop` daje dostęp do `{ engine, mixer, drums, sequencer }`. Na przykład `__bassDrop.mixer.peak('bass')` zwraca szczyt kanału, a `__bassDrop.mixer.ducking('bass')` to, jak mocno sidechain akurat przycisza bas.
+- W trybie deweloperskim `window.__bassDrop` daje dostęp do `{ engine, mixer, drums, sequencer, sampler, slicer }`. Na przykład `__bassDrop.mixer.peak('bass')` zwraca szczyt kanału, a `__bassDrop.mixer.ducking('bass')` to, jak mocno sidechain akurat przycisza bas.
 - Mierniki i animacje stoją, gdy karta jest w tle, bo `requestAnimationFrame` nie działa. Poziomy mierz wtedy w pętli z `setTimeout`.
 - Dźwięk startuje dopiero po prawdziwym kliknięciu; `element.click()` z JavaScriptu nie liczy się jako gest.
 - MIDI nie działa w osadzonych ramkach ani bez HTTPS. Testuj w Chrome lub Chromium.

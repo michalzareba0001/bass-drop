@@ -17,6 +17,9 @@ Otwórz adres z terminala (domyślnie http://localhost:5180) w Chrome lub Chromi
 - Spacja: start/stop wzoru
 - R: nagrywanie
 - 1–8: pady samplera
+- Shift+1…5: sekcje (Bas, Bębny, Sampler, Mikser, Więcej)
+
+Plik audio (mp3, wav…) możesz przeciągnąć w dowolne miejsce strony, żeby pociąć go na pętle.
 
 ## Struktura
 

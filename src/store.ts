@@ -34,6 +34,15 @@ const defaultSteps = (): Step[] => {
 
 export const PAD_COUNT = 8
 
+export const TABS = [
+  { id: 'bas', label: 'Bas' },
+  { id: 'bebny', label: 'Bębny' },
+  { id: 'sampler', label: 'Sampler' },
+  { id: 'mikser', label: 'Mikser' },
+  { id: 'wiecej', label: 'Więcej' },
+] as const
+export type Tab = (typeof TABS)[number]['id']
+
 const defaultDrumSteps = (): Record<DrumId, number[]> => {
   const row = (hits: Record<number, number>) => Array.from({ length: STEPS }, (_, i) => hits[i] ?? 0)
   return {
@@ -72,6 +81,7 @@ interface State {
   drumCfg: Record<DrumId, DrumVoiceCfg>
   mix: Record<string, StripCfg>
   sidechain: SidechainCfg
+  tab: Tab
 
   setParam: (k: ParamKey, v: number) => void
   applyPreset: (name: string) => void
@@ -95,6 +105,7 @@ interface State {
   setDrumCfg: (id: DrumId, c: Partial<DrumVoiceCfg>) => void
   setStrip: (id: string, c: Partial<StripCfg>) => void
   setSidechain: (c: Partial<SidechainCfg>) => void
+  setTab: (t: Tab) => void
 }
 
 export const useStore = create<State>()(
@@ -116,6 +127,7 @@ export const useStore = create<State>()(
       drumCfg: defaultDrumCfg(),
       mix: defaultMixer(),
       sidechain: defaultSidechain(),
+      tab: 'bas',
 
       setParam: (k, v) => {
         const d = DEF[k]
@@ -205,6 +217,7 @@ export const useStore = create<State>()(
           mixer.configure(s.mix, sidechain)
           return { sidechain }
         }),
+      setTab: (tab) => set({ tab }),
     }),
     {
       name: STORAGE_KEY,
@@ -225,6 +238,7 @@ export const useStore = create<State>()(
         drumCfg: s.drumCfg,
         mix: s.mix,
         sidechain: s.sidechain,
+        tab: s.tab,
       }),
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<State>
@@ -237,6 +251,7 @@ export const useStore = create<State>()(
           drumSteps: { ...current.drumSteps, ...(p.drumSteps ?? {}) },
           mix: { ...current.mix, ...(p.mix ?? {}) },
           sidechain: { ...current.sidechain, ...(p.sidechain ?? {}) },
+          tab: TABS.some((t) => t.id === p.tab) ? p.tab! : current.tab,
         }
       },
     },

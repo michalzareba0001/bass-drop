@@ -8,7 +8,7 @@ import { sampler, type Pad } from './audio/sampler'
 import { slicer, TrackError } from './audio/slicer'
 import { sequencer } from './audio/sequencer'
 import { computePeaks, deleteClipAudio, saveClipAudio } from './lib/clips'
-import { PAD_COUNT, useRuntime, useStore } from './store'
+import { PAD_COUNT, TABS, useRuntime, useStore } from './store'
 
 /* ---------- synth notes: mono, last-note priority, legato = slide ---------- */
 const held: number[] = []
@@ -199,6 +199,12 @@ export function installKeyboard() {
       return
     }
     const d = /^Digit([1-8])$/.exec(e.code)
+    if (d && e.shiftKey) {
+      // Shift+1…5 switches sections
+      const tab = TABS[+d[1] - 1]
+      if (tab) useStore.getState().setTab(tab.id)
+      return
+    }
     if (d) {
       const i = +d[1] - 1
       padCodes[e.code] = i

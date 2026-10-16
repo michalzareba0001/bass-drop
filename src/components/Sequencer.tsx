@@ -10,6 +10,7 @@ export function Sequencer() {
   const steps = useStore((s) => s.steps)
   const toggleNote = useStore((s) => s.toggleNote)
   const toggleSlide = useStore((s) => s.toggleSlide)
+  const clearSteps = useStore((s) => s.clearSteps)
   const [ph, setPh] = useState(-1)
 
   useEffect(() => {
@@ -32,6 +33,9 @@ export function Sequencer() {
       <div className="panel-head">
         <h2>Wzór · 16 kroków · F-moll</h2>
         <span className="hint">Kliknij pole, żeby wstawić nutę. „Slide” płynnie przejeżdża z poprzedniej nuty.</span>
+        <button className="btn sm" onClick={clearSteps}>
+          Wyczyść wzór
+        </button>
       </div>
       <div className="grid-scroll">
         <div className="grid">
