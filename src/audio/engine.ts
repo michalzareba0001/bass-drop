@@ -179,8 +179,13 @@ class Engine {
     }
   }
 
+  /**
+   * True while the voice still holds its note at time t. A note-off landing exactly on t
+   * still counts: with a 1-step gate the sequencer schedules the off on the very next step,
+   * and a slide there must glide instead of retriggering.
+   */
   private alive(t: number) {
-    return !!this.voice && (this.voice.offAt == null || this.voice.offAt > t)
+    return !!this.voice && (this.voice.offAt == null || this.voice.offAt >= t - 0.001)
   }
 
   noteOn(m: number, t = this.now(), slide = false, vel = 1) {
