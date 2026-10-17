@@ -2,7 +2,7 @@
 
 Hobbystyczna apka w przeglądarce do robienia bitów z basem 808: syntezator basu z sekwencerem, syntezowane bębny z rolkami, sidechain od stopy, mikser, kontroler MIDI, nagrywanie, sampler pętli i cięcie wczytanych kawałków (mp3 itp.) na pętle i uderzenia. Wszystko po stronie przeglądarki (Web Audio, Web MIDI), bez backendu.
 
-Właściciel pisze po polsku. **Cały tekst w interfejsie jest po polsku**, komentarze w kodzie po angielsku.
+Właściciel: **Michał Zaręba** (GitHub: `michalzareba0001`). Tego zapisu imienia i nazwiska używaj w licencjach, stopkach i podpisach. Właściciel pisze po polsku. **Cały tekst w interfejsie jest po polsku**, komentarze w kodzie po angielsku.
 
 ## Polecenia
 
