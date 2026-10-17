@@ -71,7 +71,7 @@ export const SECTIONS: { t: string; c: string; k: ParamKey[] }[] = [
 ]
 
 export const PRESETS: Record<string, Partial<Params>> = {
-  'Drop 808 (jak w pliku)': { shape: 0.1, click: 0.2, pitch: 16, pdecay: 0.09, glide: 0.12, bend: 0, attack: 0.002, decay: 1.2, sustain: 0.55, release: 0.35, drive: 0.45, cutoff: 900, res: 2, fenv: 0.3, lfoDepth: 0, gate: 3 },
+  'Drop 808': { shape: 0.1, click: 0.2, pitch: 16, pdecay: 0.09, glide: 0.12, bend: 0, attack: 0.002, decay: 1.2, sustain: 0.55, release: 0.35, drive: 0.45, cutoff: 900, res: 2, fenv: 0.3, lfoDepth: 0, gate: 3 },
   'Brudne 808': { shape: 0.3, click: 0.35, pitch: 19, pdecay: 0.07, glide: 0.1, bend: 0, attack: 0.002, decay: 1.6, sustain: 0.6, release: 0.4, drive: 0.88, cutoff: 2200, res: 1.5, fenv: 0.4, lfoDepth: 0, gate: 3 },
   'Czysty sub': { shape: 0, click: 0.1, pitch: 7, pdecay: 0.05, glide: 0.08, bend: 0, attack: 0.004, decay: 2, sustain: 0.7, release: 0.3, drive: 0, cutoff: 400, res: 0.7, fenv: 0, lfoDepth: 0, gate: 4 },
   'Długi slide': { shape: 0.15, click: 0.2, pitch: 14, pdecay: 0.1, glide: 0.4, bend: 0, attack: 0.002, decay: 3, sustain: 0.8, release: 0.5, drive: 0.55, cutoff: 1100, res: 2, fenv: 0.25, lfoDepth: 0, gate: 6 },
@@ -79,7 +79,7 @@ export const PRESETS: Record<string, Partial<Params>> = {
   'Podjazd (riser)': { shape: 0.2, click: 0, pitch: 0, pdecay: 0.05, glide: 0.1, bend: 16, bendTime: 5, attack: 0.4, decay: 5, sustain: 1, release: 0.4, drive: 0.5, cutoff: 1500, res: 3, fenv: 0, lfoDepth: 0, gate: 16 },
   Wobble: { shape: 0.8, click: 0.1, pitch: 5, pdecay: 0.06, glide: 0.15, bend: 0, attack: 0.005, decay: 2, sustain: 0.9, release: 0.3, drive: 0.55, cutoff: 320, res: 9, fenv: 0.1, lfoRate: 4.1, lfoDepth: 0.85, gate: 8 },
 }
-export const DEFAULT_PRESET = 'Drop 808 (jak w pliku)'
+export const DEFAULT_PRESET = 'Drop 808'
 
 /** Rows of the step grid: F minor, D#1..F2 */
 export const ROWS = [41, 39, 37, 36, 34, 32, 31, 29, 27]

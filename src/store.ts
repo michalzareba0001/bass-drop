@@ -252,6 +252,8 @@ export const useStore = create<State>()(
           mix: { ...current.mix, ...(p.mix ?? {}) },
           sidechain: { ...current.sidechain, ...(p.sidechain ?? {}) },
           tab: TABS.some((t) => t.id === p.tab) ? p.tab! : current.tab,
+          // the default preset used to be called 'Drop 808 (jak w pliku)'
+          preset: p.preset === 'Drop 808 (jak w pliku)' ? 'Drop 808' : (p.preset ?? current.preset),
         }
       },
     },
