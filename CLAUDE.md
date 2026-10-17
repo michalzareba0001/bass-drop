@@ -51,7 +51,10 @@ src/
   store.ts        Zustand: useStore (zapisywany) + useRuntime (ulotny stan UI)
   lib/clips.ts    dźwięk nagrań w IndexedDB + liczenie peaków do miniatur
   components/     interfejs (Knob, Rack, Sequencer, DrumMachine, Mixer, Piano, MidiPanel, RecorderPanel, TrackSlicer, Sampler, ClipLibrary, Waveform, Screen)
+docs/             instrukcja użytkownika (instrukcja.pdf) i zrzuty ekranu do README
 ```
+
+Instrukcja w `docs/instrukcja.pdf` ma zrzuty ekranu i opisuje każdy przycisk. Po zmianach w interfejsie (nowe przyciski, inne nazwy, nowe sekcje) zaktualizuj ją razem z README: zrzuty robione Playwrightem z `npm run dev`, tekst jako HTML drukowany do PDF w Chromium.
 
 ## Tor sygnału
 
