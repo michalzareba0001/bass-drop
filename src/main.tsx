@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { Analytics } from '@vercel/analytics/react'
 import { App } from './App'
 import { engine } from './audio/engine'
 import { drums } from './audio/drums'
@@ -20,8 +21,9 @@ engine.setParams(useStore.getState().params)
   mixer.configure(st.mix, st.sidechain)
 }
 installKeyboard()
+const DEV = !!(import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV
 // dev-only handle for poking at the audio modules from the browser console
-if ((import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV)
+if (DEV)
   Object.assign(window, { __bassDrop: { engine, mixer, drums, sequencer, sampler, slicer } })
 installAudioUnlock()
 connectMidi()
@@ -36,5 +38,7 @@ for (const c of useStore.getState().clips) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
+    {/* anonymous, cookie-free visit counts (Vercel Web Analytics); dev builds only log to the console */}
+    <Analytics mode={DEV ? 'development' : 'production'} />
   </StrictMode>,
 )

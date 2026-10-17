@@ -17,7 +17,7 @@
 - **Nagrywanie** całego miksu albo mikrofonu, z dokładnością do próbki: nagranie N taktów zapętla się bez przeskoku. Eksport do WAV.
 - **Mikser** z miernikami, mute, solo i sidechainem od stopy, żeby bas i stopa się nie zlewały.
 - **Kontroler MIDI**: nuty, pitch bend, kółko modulacji, sustain, przypisywanie gałek, pady na kanale 10.
-- **Działa na telefonie**, a wszystkie nagrania zostają w Twojej przeglądarce. Nic nie trafia na serwer.
+- **Działa na telefonie**, a wszystkie nagrania i ustawienia zostają w Twojej przeglądarce. Strona liczy tylko anonimowe odwiedziny (Vercel Web Analytics, bez ciasteczek).
 
 <img src="docs/telefon.png" alt="Bass Drop na telefonie: sampler z pętlami" width="260">
 
@@ -31,7 +31,7 @@ Całość działa w przeglądarce, na czystym **Web Audio API**, bez żadnych bi
 - wykrywanie tempa i taktów (spectral flux, autokorelacja, dopasowanie siatki do całego utworu) liczy się w **Web Workerze**,
 - dopasowanie pętli do tempa robi `OfflineAudioContext`.
 
-Interfejs: **React 19**, **TypeScript**, **Zustand**, **Vite**. Nagrania są w IndexedDB, ustawienia w localStorage. Hosting na Vercel.
+Interfejs: **React 19**, **TypeScript**, **Zustand**, **Vite**. Nagrania są w IndexedDB, ustawienia w localStorage. Hosting i anonimowe statystyki odwiedzin na Vercel.
 
 ## Uruchomienie u siebie
 

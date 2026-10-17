@@ -23,6 +23,8 @@ Repo jest podpięte do **Vercel**: każdy push na `main` buduje i publikuje prod
 
 Vite + React 19 + TypeScript (strict) + Zustand (z `persist`) + idb-keyval. Żadnych bibliotek audio: wszystko na czystym Web Audio API.
 
+Odwiedziny liczy **Vercel Web Analytics** (`@vercel/analytics`, komponent `<Analytics>` w `main.tsx`): anonimowo, bez ciasteczek, więc bez baneru zgody. W trybie deweloperskim tylko loguje do konsoli. Statystyki są w panelu Vercel, zakładka Analytics. Poza tym nic nie wychodzi z przeglądarki: nagrania i ustawienia zostają lokalnie.
+
 ## Najważniejsza zasada architektury
 
 **Silnik dźwięku żyje poza Reactem.** Moduły w `src/audio/` to zwykłe klasy-singletony bez importów z Reacta. React tylko wywołuje ich metody i czyta stan. Nie trzymaj węzłów audio, oscylatorów ani zegara sekwencera w komponentach ani w stanie Reacta: przerysowanie nie może rozjechać rytmu ani uciąć dźwięku.
