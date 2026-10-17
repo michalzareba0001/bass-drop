@@ -1,7 +1,7 @@
 import { clamp, defaultParams, mtof, type ParamKey, type Params } from './params'
 import { drums } from './drums'
 import { mixer } from './mixer'
-import { hold } from './util'
+import { hold, KNOB_SMOOTH } from './util'
 
 interface Voice {
   o1: OscillatorNode
@@ -155,25 +155,25 @@ class Engine {
         break
       case 'cutoff':
         this.filt.frequency.cancelScheduledValues(now)
-        this.filt.frequency.setTargetAtTime(P.cutoff, now, 0.02)
-        this.lfoGain.gain.setTargetAtTime(P.lfoDepth * P.cutoff * 0.9, now, 0.02)
+        this.filt.frequency.setTargetAtTime(P.cutoff, now, KNOB_SMOOTH)
+        this.lfoGain.gain.setTargetAtTime(P.lfoDepth * P.cutoff * 0.9, now, KNOB_SMOOTH)
         break
       case 'res':
-        this.filt.Q.setTargetAtTime(P.res, now, 0.02)
+        this.filt.Q.setTargetAtTime(P.res, now, KNOB_SMOOTH)
         break
       case 'volume':
-        this.master.gain.setTargetAtTime(P.volume, now, 0.02)
+        this.master.gain.setTargetAtTime(P.volume, now, KNOB_SMOOTH)
         break
       case 'lfoRate':
-        this.lfo.frequency.setTargetAtTime(P.lfoRate, now, 0.02)
+        this.lfo.frequency.setTargetAtTime(P.lfoRate, now, KNOB_SMOOTH)
         break
       case 'lfoDepth':
-        this.lfoGain.gain.setTargetAtTime(P.lfoDepth * P.cutoff * 0.9, now, 0.02)
+        this.lfoGain.gain.setTargetAtTime(P.lfoDepth * P.cutoff * 0.9, now, KNOB_SMOOTH)
         break
       case 'shape':
         if (this.voice) {
-          this.voice.g1.gain.setTargetAtTime(1 - P.shape * 0.6, now, 0.02)
-          this.voice.g2.gain.setTargetAtTime(P.shape * 0.55, now, 0.02)
+          this.voice.g1.gain.setTargetAtTime(1 - P.shape * 0.6, now, KNOB_SMOOTH)
+          this.voice.g2.gain.setTargetAtTime(P.shape * 0.55, now, KNOB_SMOOTH)
         }
         break
     }

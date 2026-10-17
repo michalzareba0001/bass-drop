@@ -1,4 +1,4 @@
-import { hold } from './util'
+import { hold, KNOB_SMOOTH } from './util'
 
 export type ChannelId = 'bass' | 'drums' | `pad${number}`
 
@@ -82,7 +82,7 @@ class Mixer {
     for (const [id, s] of this.strips) {
       const c = this.cfg[id]
       if (!c) continue
-      s.fader.gain.setTargetAtTime(c.vol, now, 0.015)
+      s.fader.gain.setTargetAtTime(c.vol, now, KNOB_SMOOTH)
       const audible = !c.mute && (!anySolo || c.solo)
       s.mute.gain.setTargetAtTime(audible ? 1 : 0, now, 0.01)
       if (!c.sc) {

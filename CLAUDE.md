@@ -75,6 +75,7 @@ odsłuch klipów ─────────────────────
 - **Zapas głośności**: `synthOut` 0.72, wyjście bębnów 0.65, `mix` 0.6, próg limitera −3 dB. Kompresor w Web Audio sam dokłada makeup gain, więc niski próg wypycha master pod sufit i mierniki stale świecą na czerwono. Soft clip na końcu nigdy nie przekracza ±0.98. Po zmianach poziomów sprawdź szczyty: kanały poniżej 1.0, master około −1 dB.
 - **Planowanie w czasie**: wszystko, co gra w rytmie, planuj na zegarze `AudioContext` (parametr `t`), a nie przez `setTimeout`.
 - **Automatyka parametrów**: przed nową automatyką na już animowanym parametrze użyj `hold(param, t)` z `util.ts`. Do przyciszania sidechainem używamy `setTargetAtTime` w obie strony, bo `linearRamp` przy nakładających się uderzeniach potrafił zejść poniżej ustawionego poziomu.
+- **Wygładzanie gałek**: zmiany z gałek, suwaków miksera, głośności bębnów i padów idą przez `setTargetAtTime` ze stałą `KNOB_SMOOTH` z `util.ts` (6 ms, ok. 95 % po 18 ms). Krótsza stała da słyszalne schodki przy szybkim kręceniu, dłuższa sprawia, że gałki są „gumowe”. Wyciszanie (M) i powrót sidechaina mają osobne, krótkie przejścia przeciw trzaskom.
 - **Pierwszy dźwięk wymaga gestu użytkownika**: `engine.ensure()` tworzy `AudioContext`. Jeśli kontekst jest zawieszony (na przykład MIDI przyszło przed kliknięciem), pokazujemy przycisk „Kliknij, żeby włączyć dźwięk”.
 
 ## Stan i zapis

@@ -1,5 +1,5 @@
 import { mixer } from './mixer'
-import { hold } from './util'
+import { hold, KNOB_SMOOTH } from './util'
 
 export type DrumId = 'kick' | 'snare' | 'clap' | 'chh' | 'ohh'
 
@@ -65,7 +65,7 @@ class Drums {
   private apply() {
     if (!this.ctx) return
     const now = this.ctx.currentTime
-    for (const [id, g] of this.voiceOut) g.gain.setTargetAtTime(this.cfg[id].level, now, 0.015)
+    for (const [id, g] of this.voiceOut) g.gain.setTargetAtTime(this.cfg[id].level, now, KNOB_SMOOTH)
   }
 
   trigger(id: DrumId, t: number, vel = 1) {

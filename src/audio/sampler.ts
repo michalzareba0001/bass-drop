@@ -1,5 +1,6 @@
 import { engine } from './engine'
 import { mixer } from './mixer'
+import { KNOB_SMOOTH } from './util'
 
 export type PadMode = 'toggle' | 'hold' | 'shot'
 
@@ -114,7 +115,7 @@ class Sampler {
     }
     v.s = s
     v.len = e - s
-    v.g.gain.setTargetAtTime(o.gain, now, 0.02)
+    v.g.gain.setTargetAtTime(o.gain, now, KNOB_SMOOTH)
   }
 
   stop(key: string, when?: number) {
