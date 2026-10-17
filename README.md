@@ -64,3 +64,7 @@ Plik audio możesz przeciągnąć w dowolne miejsce strony, żeby pociąć go na
 - `src/store.ts` – stan w Zustand; ustawienia w localStorage, dźwięk nagrań w IndexedDB
 - `src/components/` – interfejs
 - `docs/` – instrukcja użytkownika i zrzuty ekranu
+
+## Licencja
+
+[MIT](LICENSE): możesz używać, zmieniać i rozpowszechniać kod, także komercyjnie, pod warunkiem zachowania informacji o autorze i licencji.
