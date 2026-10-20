@@ -78,6 +78,24 @@ export const PRESETS: Record<string, Partial<Params>> = {
   'Zjazd w dół': { shape: 0.15, click: 0.25, pitch: 12, pdecay: 0.12, glide: 0.1, bend: -14, bendTime: 3, attack: 0.002, decay: 4, sustain: 0.85, release: 0.6, drive: 0.5, cutoff: 1200, res: 2, fenv: 0.2, lfoDepth: 0, gate: 16 },
   'Podjazd (riser)': { shape: 0.2, click: 0, pitch: 0, pdecay: 0.05, glide: 0.1, bend: 16, bendTime: 5, attack: 0.4, decay: 5, sustain: 1, release: 0.4, drive: 0.5, cutoff: 1500, res: 3, fenv: 0, lfoDepth: 0, gate: 16 },
   Wobble: { shape: 0.8, click: 0.1, pitch: 5, pdecay: 0.06, glide: 0.15, bend: 0, attack: 0.005, decay: 2, sustain: 0.9, release: 0.3, drive: 0.55, cutoff: 320, res: 9, fenv: 0.1, lfoRate: 4.1, lfoDepth: 0.85, gate: 8 },
+  // long, clean trap 808 that rings under the beat
+  'Trap 808': { shape: 0.05, click: 0.25, pitch: 12, pdecay: 0.06, glide: 0.15, bend: 0, attack: 0.002, decay: 3.5, sustain: 0.75, release: 0.6, drive: 0.3, cutoff: 1400, res: 1, fenv: 0.15, lfoDepth: 0, gate: 8 },
+  // sliding, gritty UK/NY drill bass: long notes and a slow glide between them
+  'Drill slide': { shape: 0.15, click: 0.3, pitch: 14, pdecay: 0.07, glide: 0.25, bend: 0, attack: 0.002, decay: 4, sustain: 0.85, release: 0.4, drive: 0.6, cutoff: 1800, res: 1.5, fenv: 0.2, lfoDepth: 0, gate: 12 },
+  // short and kicky, almost a second kick drum
+  Punch: { shape: 0.1, click: 0.5, pitch: 24, pdecay: 0.04, glide: 0.05, bend: 0, attack: 0.001, decay: 0.35, sustain: 0.15, release: 0.12, drive: 0.5, cutoff: 2500, res: 0.8, fenv: 0.35, lfoDepth: 0, gate: 1 },
+  // warm, round and short, sits under sampled drums
+  'Boom bap': { shape: 0, click: 0.15, pitch: 10, pdecay: 0.08, glide: 0.08, bend: 0, attack: 0.003, decay: 0.8, sustain: 0.4, release: 0.25, drive: 0.2, cutoff: 600, res: 0.8, fenv: 0.1, lfoDepth: 0, gate: 2 },
+  // heavy distortion: the 808 becomes the lead
+  'Przester 808': { shape: 0.35, click: 0.3, pitch: 18, pdecay: 0.06, glide: 0.12, bend: 0, attack: 0.002, decay: 2.5, sustain: 0.7, release: 0.4, drive: 1, cutoff: 3500, res: 1, fenv: 0.3, lfoDepth: 0, gate: 4 },
+  // phonk: crushed, bright and short
+  Phonk: { shape: 0.4, click: 0.45, pitch: 20, pdecay: 0.05, glide: 0.06, bend: 0, attack: 0.001, decay: 1.2, sustain: 0.45, release: 0.2, drive: 0.95, cutoff: 5000, res: 1.5, fenv: 0.4, lfoDepth: 0, gate: 2 },
+  // soft, filtered sub with a slow attack, for lo-fi and ambient
+  'Miękki sub': { shape: 0, click: 0, pitch: 5, pdecay: 0.1, glide: 0.2, bend: 0, attack: 0.02, decay: 2.5, sustain: 0.8, release: 0.8, drive: 0.1, cutoff: 250, res: 0.7, fenv: 0, lfoDepth: 0, gate: 6 },
+  // detuned-saw style bass with a slowly breathing filter (drum and bass)
+  Reese: { shape: 0.9, click: 0, pitch: 0, pdecay: 0.05, glide: 0.12, bend: 0, attack: 0.01, decay: 2, sustain: 0.9, release: 0.3, drive: 0.4, cutoff: 700, res: 2, fenv: 0.15, lfoRate: 0.4, lfoDepth: 0.35, gate: 8 },
+  // dubstep wobble at about 1/16 notes of 123 BPM
+  'Szybki wobble': { shape: 0.9, click: 0.1, pitch: 5, pdecay: 0.06, glide: 0.15, bend: 0, attack: 0.005, decay: 2, sustain: 0.95, release: 0.3, drive: 0.4, cutoff: 280, res: 0.9, fenv: 0.1, lfoRate: 8.2, lfoDepth: 0.9, gate: 8 },
 }
 export const DEFAULT_PRESET = 'Drop 808'
 

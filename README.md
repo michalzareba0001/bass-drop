@@ -10,7 +10,7 @@
 
 ## Co potrafi
 
-- **Syntezator basu 808** z 16-krokowym wzorem: spadek wysokości na ataku, glide i slide, zjazdy, przester, filtr z obwiednią, wobble (LFO na filtrze) i 7 presetów.
+- **Syntezator basu 808** z 16-krokowym wzorem: spadek wysokości na ataku, glide i slide, zjazdy, przester, filtr z obwiednią, wobble (LFO na filtrze) i 16 presetów: od czystego subu, przez trap, drill i phonk, po reese i wobble.
 - **Automat perkusyjny** z syntezowanymi bębnami (stopa, werbel, klask, hi-haty) i rolkami 1/32, trioli i 1/64.
 - **Cięcie utworów na pętle**: wczytujesz mp3 albo wav, apka sama wykrywa tempo i początek taktu, a Ty jednym kliknięciem rozkładasz pętle albo pojedyncze uderzenia na 8 padów. Pętle mogą od razu dopasować się do tempa projektu.
 - **Sampler** na 8 padów: pętle, przycinanie, wysokość, start równo z bitem.
