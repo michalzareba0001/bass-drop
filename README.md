@@ -67,4 +67,4 @@ Plik audio możesz przeciągnąć w dowolne miejsce strony, żeby pociąć go na
 
 ## Licencja
 
-[MIT](LICENSE): możesz używać, zmieniać i rozpowszechniać kod, także komercyjnie, pod warunkiem zachowania informacji o autorze i licencji.
+[0BSD](LICENSE) (BSD Zero Clause): kod jest za darmo dla każdego i do czegokolwiek. Możesz go używać, zmieniać, rozpowszechniać i sprzedawać, bez obowiązku podawania autora ani dołączania licencji.
