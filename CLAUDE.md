@@ -97,7 +97,7 @@ odsłuch klipów ─────────────────────
 
 ## Interfejs
 
-- **Sekcje w zakładkach** (`TABS` w `store.ts`, `App.tsx`): Bas (presety, ekran, gałki, wzór, klawiatura), Bębny, Sampler (pady, kawałek → pętle, nagrywanie, biblioteka nagrań), Mikser, Więcej (MIDI, skróty, informacje). Widać jedną naraz. Aktywna zakładka zapisuje się w `useStore.tab`.
+- **Sekcje w zakładkach** (`TABS` w `store.ts`, `App.tsx`): Bas (presety, ekran, gałki, wzór, klawiatura), Bębny, Sampler (pady, kawałek → pętle, nagrywanie, biblioteka nagrań), Mikser, Więcej (MIDI, skróty klawiszowe). Widać jedną naraz. Aktywna zakładka zapisuje się w `useStore.tab`.
 - Wszystkie strony zostają zamontowane, a ukryte mają atrybut `hidden`, żeby nie tracić ich stanu (np. zaznaczenia w cięciu kawałka). Nowe panele dodawaj do właściwej `<Page>`, nie na koniec aplikacji.
 - Górny pasek jest przyklejony: logo, Graj/Stop, BPM, Nagraj i zakładki. Na telefonie (do 700 px) zakładki są paskiem na dole ekranu. Kropka na zakładce oznacza: Sampler gra albo nagrywa, w Mikserze jest wyciszony kanał albo solo.
 - Plik audio upuszczony w dowolnym miejscu strony przełącza na Sampler i wczytuje się do cięcia.

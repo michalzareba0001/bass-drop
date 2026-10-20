@@ -956,39 +956,6 @@ body:has(.learn[aria-pressed='true']) .rack .knob {
   gap: 6px;
 }
 
-/* file facts */
-.file {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 14px;
-}
-.file h2 {
-  margin: 0 0 10px;
-  font-family: var(--f-label);
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.facts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-  gap: 10px 18px;
-  margin: 0 0 10px;
-}
-.facts dt {
-  font-family: var(--f-label);
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--muted);
-}
-.facts dd {
-  margin: 2px 0 0;
-  font-family: var(--f-mono);
-  font-size: 14px;
-}
-
 .unlock {
   position: fixed;
   left: 50%;
